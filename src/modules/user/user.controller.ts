@@ -24,8 +24,7 @@ export const createUser = asyncHandler(async (req: any, res: Response) => {
   });
 });
 
-export const updateUser = asyncHandler(async (req: any, res: Response) => {
-  console.log(req.params, req.body, req.query);
+export const updateUser = asyncHandler(async (req: any, res: Response) => { 
   const data = await service.updateUser(req.params.id, req.body);
 
   successResponse({
@@ -38,7 +37,7 @@ export const updateUser = asyncHandler(async (req: any, res: Response) => {
 export const updateUserProfileImage = asyncHandler(
   async (req: any, res: Response) => {
     if (!req.file) {
-      return errorResponse({
+       errorResponse({
         res,
         message: "Validation Error",
         code: "ValidationError",

@@ -7,8 +7,8 @@ import { apiLimiter } from "./middlewares/rateLimiter.middleware";
 import { sanitizeInput } from "./middlewares/sanitize.middleware";
 import { errorResponse } from "./utils/response";
 import authRoutes from "./modules/auth/auth.routes";
-import todoRoutes from "./modules/todos/todo.routes";
-import userRoutes from "./modules/users/user.routes";
+import todoRoutes from "./modules/todo/todo.routes";
+import userRoutes from "./modules/user/user.routes";
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(sanitizeInput);
 
 app.use("/api", apiLimiter); 
 app.use("/api/auth", authRoutes);
-app.use("/api/todos", todoRoutes);
+app.use("/api/todo", todoRoutes);
 app.use("/api/user", userRoutes);
 
 app.use("/health", (req: Request, res: Response) => {

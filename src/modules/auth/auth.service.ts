@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import User from "../users/user.model";
+import User from "../user/user.model";
 import Token from "./token.model";
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken} from "../../utils/jwt";
@@ -7,6 +7,13 @@ import { env } from "../../config/env";
 import { AppError } from "../../utils/AppError";
 
 export const register = async (data: any) => {
+
+  const userExist = await User.findOne({ email: data.email });
+
+  if (userExist) throw new AppError("Validation Error", 422, "ValidationError", {
+    "email": "Email already Exist"
+});
+
   const hashed = await bcrypt.hash(data.password, 10);
 
   const user = await User.create({
@@ -14,7 +21,15 @@ export const register = async (data: any) => {
     password: hashed
   });
 
-  return user;
+  const accessToken = generateAccessToken(user.id);
+  const refreshToken = generateRefreshToken(user.id);
+
+  await Token.create({
+    userId: user.id,
+    token: refreshToken
+  });
+
+  return { accessToken, refreshToken, user: { id: user.id, name: user.name, email: user.email } }; 
 };
 
 export const login = async (data : {email : string, password :string}) => {

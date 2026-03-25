@@ -22,7 +22,7 @@ const fileFilter: multer.Options["fileFilter"] = (__req: any, file: any, cb: any
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new AppError("Invalid file type", 400, "InvalidFileType", "Only JPEG, PNG, and WEBP images are allowed"));
+    cb(new AppError("Invalid file type", 422, "InvalidFileType", "Only JPEG, PNG, and WEBP images are allowed"));
   }
 };
 

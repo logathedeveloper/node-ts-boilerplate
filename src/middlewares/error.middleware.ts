@@ -1,10 +1,10 @@
 import { errorResponse } from "../utils/response";
 import { AppError } from "../utils/AppError";
 import multer from "multer";
+import { env } from "../config/env";
 
-export const globalErrorHandler = (err : any, req: any, res: any, next: any) => {
-
-  console.error(err);
+export const globalErrorHandler = (err: any, req: any, res: any, next: any) => {
+  if (env.NODE_ENV == "development") console.log(err);
 
   if (err instanceof AppError) {
     return errorResponse({
@@ -23,12 +23,21 @@ export const globalErrorHandler = (err : any, req: any, res: any, next: any) => 
         res,
         message: "Invalid file size",
         code: "FileTooLarge",
-        statusCode:  400,
+        statusCode: 422,
         details: "File size must be less than 2MB",
-      }); 
+      });
     }
   }
 
+  if (err instanceof Error) {
+    return errorResponse({
+      res,
+      message: err.message,
+      code: "InternalServerError",
+      statusCode: 500,
+      details: "An internal server error occured",
+    });
+  }
 
   // Unknown errors
   errorResponse({

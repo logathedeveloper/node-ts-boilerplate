@@ -1,6 +1,6 @@
 import { connectDB } from "../config/database";
-import Todo from "../modules/todos/todo.model";
-import User from "../modules/users/user.model";
+import Todo from "../modules/todo/todo.model";
+import User from "../modules/user/user.model";
 
 const seedTasks = async () => {
   await connectDB();

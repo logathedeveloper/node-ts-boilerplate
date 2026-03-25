@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { connectDB } from "../config/database";
-import User from "../modules/users/user.model";
+import User from "../modules/user/user.model";
 
 async function seedAdmin() {
 

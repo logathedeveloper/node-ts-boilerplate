@@ -6,7 +6,6 @@ import { connectDB, disconnectDB } from "../config/database";
 import { describe, it, test, expect, beforeAll, afterAll } from "@jest/globals";
 let token: string;
 let userId: string;
-let todoId: string;
 
 beforeAll(async () => {
   await connectDB();
@@ -16,8 +15,6 @@ beforeAll(async () => {
   });
 
   token = res.body.data.accessToken;
-  userId = res.body.data.user.id;
-
 });
 
 afterAll(async () => {
@@ -26,47 +23,46 @@ afterAll(async () => {
   await jobQueue.close();
 });
 
-describe("Todo get All API", () => {
+describe("User get All API", () => {
   test("should return the list of users", async () => {
     const res = await request(app)
-      .get("/api/todo")
+      .get("/api/user")
       .set("Authorization", `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data");
   });
 
   test("should fail without Access token", async () => {
-    const res = await request(app).get("/api/todo");
+    const res = await request(app).get("/api/user");
     expect(res.statusCode).toBe(401);
   });
 });
 
-describe("Todo Create API", () => {
-  let route = "/api/todo";
-  let todoData = {
-    title: "Test Task",
-    description: "Test task description"
+describe("User Create API", () => {
+  let route = "/api/user";
+  let userData = {
+    name: "Test User1",
+    email: "testuser1@test.com",
+    password: "Test@123",
   };
-  test("should success with New task details", async () => {
+  test("should success with New User details", async () => {
     const res = await request(app)
       .post(route)
       .set("Authorization", `Bearer ${token}`)
-      .send({...todoData,userId});
+      .send(userData);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data"); 
-    expect(res.body.data.title).toBe(todoData.title); 
-    todoId = res.body.data._id; 
+    userId = res.body.data._id; 
   });
 
-  test("should fail with invalid userid for todo", async () => {
+  test("should fail with duplicate email", async () => {
     const res = await request(app)
       .post(route)
       .set("Authorization", `Bearer ${token}`)
-      .send({...todoData, userId:"test"});
+      .send(userData);
     expect(res.statusCode).toBe(422);
     expect(res.body.error.code).toBe("ValidationError");
   });
-
   test("should fail with invalid values", async () => {
     const res = await request(app)
       .post(route)
@@ -77,41 +73,27 @@ describe("Todo Create API", () => {
   });
 });
 
-describe("Todo Update API", () => {
-  let todoData = {
-    title: "Test Task Updated",
-    description: "Test task description",
-    completed : true
+describe("User Update API", () => {
+  let userData = {
+    name: "Test User1",
+    email: "testuserupdated@test.com",
+    password: "Test@123",
   };
-  test("should success with todo update with new details", async () => {
+  test("should success with user update with new details", async () => {
     const res = await request(app)
-      .post(`/api/todo/${todoId}`)
+      .post(`/api/user/${userId}`)
       .set("Authorization", `Bearer ${token}`)
-      .send({...todoData,userId});
+      .send(userData);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("data");
-    expect(res.body.data.title).toBe(todoData.title); 
-    expect(res.body.data.completed).toBe(todoData.completed); 
   });
 
   test("should fail with invalid values", async () => {
     const res = await request(app)
-      .post(`/api/todo/${todoId}`)
+      .post(`/api/user/${userId}`)
       .set("Authorization", `Bearer ${token}`)
       .send({ name: "", email: "", password: "" });
     expect(res.statusCode).toBe(422);
     expect(res.body.error.code).toBe("ValidationError");
   });
-});
-describe("Todo delete API", () => {
-  
-  test("should success with todo delete", async () => {
-    const res = await request(app)
-      .delete(`/api/todo/${todoId}`)
-      .set("Authorization", `Bearer ${token}`)
-      .send();
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("data"); 
-  });
-   
 });

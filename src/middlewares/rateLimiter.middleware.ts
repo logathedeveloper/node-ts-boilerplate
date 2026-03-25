@@ -1,6 +1,7 @@
 import rateLimit from "express-rate-limit";
 import { RedisStore, RedisReply } from "rate-limit-redis";
 import { redisClient } from "../config/redis";
+import { env } from "../config/env";
 
 const options = {
   windowMs: 10 * 60 * 1000, // 15 mins
@@ -35,7 +36,7 @@ export const authLimiter = rateLimit({
   }),
   ...options,
   windowMs: 10 * 60 * 1000,
-  max: 5, // login brute-force protection
+  max: 100, // login brute-force protection
 });
 
 export const apiLimiter = (req: any, res: any, next: any)=>{

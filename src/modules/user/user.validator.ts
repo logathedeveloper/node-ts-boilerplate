@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { requiredString } from "../../utils/validator.helper";
+import { objectIdSchema, requiredString } from "../../utils/validator.helper";
  
 export const createSchema = z.object({
   body: z.object({
@@ -11,7 +11,7 @@ export const createSchema = z.object({
 
 export const updateSchema = z.object({
   params: z.object({
-    id: requiredString("User ID")
+    id: objectIdSchema("User Id")
   }),
   body: z.object({
     name:  requiredString("Name"),
@@ -22,7 +22,7 @@ export const updateSchema = z.object({
 
 export const updatePofileImageSchema = z.object({
   params: z.object({
-    id: requiredString("User ID")
+    id: objectIdSchema("User Id")
   })
   
 });
