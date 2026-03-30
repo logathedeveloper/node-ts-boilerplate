@@ -9,6 +9,9 @@ import { errorResponse } from "./utils/response";
 import authRoutes from "./modules/auth/auth.routes";
 import todoRoutes from "./modules/todo/todo.routes";
 import userRoutes from "./modules/user/user.routes";
+import { env } from "./config/env";
+import swaggerUi from "swagger-ui-express"; 
+import { swaggerDocument,swaggerOptions } from "./swagger";
 
 const app = express();
 
@@ -29,7 +32,12 @@ app.use("/health", (req: Request, res: Response) => {
   res.sendStatus(200);
 });
 
-app.use("/", (req: Request, res: Response) => {
+
+if (env.NODE_ENV !== "production") {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+}
+
+app.use((req: Request, res: Response) => {
   errorResponse({
     res,
     message: "Not Found",
@@ -39,5 +47,6 @@ app.use("/", (req: Request, res: Response) => {
 });
 
 app.use(globalErrorHandler);
+
 
 export default app;

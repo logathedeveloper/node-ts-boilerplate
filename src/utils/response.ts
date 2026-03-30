@@ -24,7 +24,7 @@ export const successResponse = ({
     success: true,
     message,
     data,
-    meta,
+    ...(meta ? {meta} : {})
   });
 };
 

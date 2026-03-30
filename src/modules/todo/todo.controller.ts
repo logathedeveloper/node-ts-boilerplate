@@ -9,7 +9,7 @@ export const getTodos = asyncHandler(async (req: any, res: Response) => {
   successResponse({
     res,
     message: "success",
-    data: todos,
+    ...todos,
   });
 });
 

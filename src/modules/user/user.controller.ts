@@ -10,7 +10,7 @@ export const getUsers = asyncHandler(async (req: any, res: Response) => {
   successResponse({
     res,
     message: "success",
-    data,
+    ...data,
   });
 });
 
