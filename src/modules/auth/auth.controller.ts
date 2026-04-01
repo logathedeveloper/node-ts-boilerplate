@@ -33,3 +33,13 @@ export const refresh = async (req: Request, res: Response) => {
     data: access,
   });
 };
+
+export const profile = async (req: any, res: any) => {
+  const user = req.user;
+  const data = await service.profile(user); 
+  successResponse({
+    res,
+    message: "success",
+    data : {...data}
+  });
+};

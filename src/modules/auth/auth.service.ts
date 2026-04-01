@@ -67,3 +67,11 @@ export const refresh = async (token: string) => {
 
   return { accessToken };
 };
+
+export const profile = async (user : any) => {
+  const data = await User.findById(user.id ).lean();
+
+  if (!data) throw new AppError("Invalid Session", 400, "InvalidData");
+ 
+  return data ;
+};
